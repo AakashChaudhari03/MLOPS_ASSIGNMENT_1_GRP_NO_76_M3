@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: m3mlops.azurecr.io/m3model
+  tag: v3
+
+service:
+  type: LoadBalancer
+  port: 5000
+  targetPort: 5000
+
+serviceAccount:
+  create: true
+  name: ""  # or specify a custom name if needed
+
+ingress:
+  enabled: false
+  name: ""
+  nginx:
+    controller:
+      class: ""
+  # You can add other ingress configurations as needed
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80

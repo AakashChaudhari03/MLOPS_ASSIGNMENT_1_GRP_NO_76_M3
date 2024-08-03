@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-deployment
+  labels:
+    app: model
+spec:
+  replicas: 2  # Number of replicas/pods
+  selector:
+    matchLabels:
+      app: model
+  template:
+    metadata:
+      labels:
+        app: model
+    spec:
+      containers:
+      - name: model-container
+        image: m3mlops.azurecr.io/m3model:v3  # Replace with your image URL
+        ports:
+        - containerPort: 5000  # Port on which the container listens
+        env:
+        - name: ENVIRONMENT
+          value: "production"  # Example environment variable
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        # Optionally define liveness and readiness probes
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 10
